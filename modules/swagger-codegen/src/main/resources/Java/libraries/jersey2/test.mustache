@@ -25,30 +25,6 @@ import static org.junit.Assert.*;
 
 {{>generatedAnnotation}}
 
-public class UserApiTest {
-@Test
-public void createUser200() throws Exception {
-SignUpDTO body = new SignUpDTO();
-String curTime = String.valueOf(new Date().getTime());
-String test = curTime + "test";
-body.setUsername(test);
-body.setEmail(test + "@test.com");
-body.setPassword(curTime);
-
-new UserApi().createUser(body);
-}
-
-@Test
-public void createUserExist() throws Exception {
-SignUpDTO body = new SignUpDTO();
-body.setUsername("exist");
-body.setEmail("exist@exist.com");
-body.setPassword("exist@exist");
-
-new UserApi().createUser(body);
-}
-
-
 {{#operations}}
 public class {{classname}}Test {
 
@@ -64,19 +40,19 @@ public class {{classname}}Test {
     }
 
     {{#operation}}
-        /**
-        * {{summary}}
-        * {{notes}}{{#allParams}}
-            * @param {{paramName}} {{description}}{{#required}} (required){{/required}}{{^required}} (optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}{{#returnType}}
-            * @return {{{returnType}}}{{/returnType}}
-        * @throws ApiException if fails to make API call
-        */
-        @Test public void {{operationId}} () {
-            {{#allParams}}
-                {{{dataType}}} {{{paramName}}} = {{{example}}}; // {{{dataType}}} | {{{description}}}
-            {{/allParams}}
-            api.{{operationId}}({{#allParams}} {{{paramName}}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
-        }
+    /**
+    * {{summary}}
+    * {{notes}}{{#allParams}}
+        * @param {{paramName}} {{description}}{{#required}} (required){{/required}}{{^required}} (optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}{{#returnType}}
+        * @return {{{returnType}}}{{/returnType}}
+    * @throws ApiException if fails to make API call
+    */
+    @Test public void {{operationId}} () {
+        {{#allParams}}
+            {{{dataType}}} {{{paramName}}} = {{{example}}}; // {{{dataType}}} | {{{description}}}
+        {{/allParams}}
+        api.{{operationId}}({{#allParams}} {{{paramName}}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
+    }
     {{/operation}}
 }
 {{/operations}}

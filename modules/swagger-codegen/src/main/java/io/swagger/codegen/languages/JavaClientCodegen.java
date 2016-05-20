@@ -387,6 +387,13 @@ public class JavaClientCodegen extends DefaultCodegen implements CodegenConfig {
     }
 
     @Override
+    public String apiTestFileFolder() {
+        System.out.println("Test File Folder");
+        System.out.println(outputFolder + "/" + sourceFolder + "/" + apiPackage().replace('.', '/'));
+        return (outputFolder + "/" + testBasePath + "/" + apiPackage().replace('.', '/'));
+    }
+
+    @Override
     public String toApiDocFilename(String name) {
         return toApiName(name);
     }
