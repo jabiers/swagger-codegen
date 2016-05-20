@@ -38,6 +38,7 @@ public class DefaultCodegen {
     protected Map<String, String> apiTemplateFiles = new HashMap<String, String>();
     protected Map<String, String> modelTemplateFiles = new HashMap<String, String>();
     protected Map<String, String> apiTestTemplateFiles = new HashMap<String, String>();
+    protected Map<String, String> apiTestInterfaceTemplateFiles = new HashMap<String, String>();
     protected Map<String, String> modelTestTemplateFiles = new HashMap<String, String>();
     protected Map<String, String> apiDocTemplateFiles = new HashMap<String, String>();
     protected Map<String, String> modelDocTemplateFiles = new HashMap<String, String>();
@@ -402,6 +403,10 @@ public class DefaultCodegen {
         return apiTestTemplateFiles;
     }
 
+    public Map<String, String> apiTestInterfaceTemplateFiles() {
+        return apiTestInterfaceTemplateFiles;
+    }
+
     public Map<String, String> modelTestTemplateFiles() {
         return modelTestTemplateFiles;
     }
@@ -423,6 +428,10 @@ public class DefaultCodegen {
     }
 
     public String apiTestFileFolder() {
+        return outputFolder + "/" + testPackage().replace('.', '/');
+    }
+
+    public String apiTestInterfaceFileFolder() {
         return outputFolder + "/" + testPackage().replace('.', '/');
     }
 
@@ -529,6 +538,17 @@ public class DefaultCodegen {
     public String toApiTestFilename(String name) {
         return toApiName(name) + "Test";
     }
+
+    /**
+     * Return the file name of the Api Test Interface
+     *
+     * @param name the file name of the Api
+     * @return the file name of the Api
+     */
+    public String toApiTestInterfaceFilename(String name) {
+        return toApiName(name) + "TestInterface";
+    }
+
 
     /**
      * Return the variable name in the Api
@@ -2673,6 +2693,11 @@ public class DefaultCodegen {
     public String apiTestFilename(String templateName, String tag) {
         String suffix = apiTestTemplateFiles().get(templateName);
         return apiTestFileFolder() + '/' + toApiTestFilename(tag) + suffix;
+    }
+
+    public String apiTestInterfaceFilename(String templateName, String tag) {
+        String suffix = apiTestInterfaceTemplateFiles().get(templateName);
+        return apiTestInterfaceFileFolder() + '/' + toApiTestInterfaceFilename(tag) + suffix;
     }
 
     public boolean shouldOverwrite(String filename) {

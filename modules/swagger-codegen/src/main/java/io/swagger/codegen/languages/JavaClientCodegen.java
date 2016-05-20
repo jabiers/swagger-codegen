@@ -46,7 +46,7 @@ public class JavaClientCodegen extends DefaultCodegen implements CodegenConfig {
     protected boolean hideGenerationTimestamp = false;
     protected String apiDocPath = "docs/";
     protected String modelDocPath = "docs/";
-    protected String testBasePath = "src" + File.separator + "test";
+    protected String testBasePath = "src" + File.separator + "test" + File.separator + "java";
 
     public JavaClientCodegen() {
         super();
@@ -304,7 +304,8 @@ public class JavaClientCodegen extends DefaultCodegen implements CodegenConfig {
             // generate markdown docs
             modelDocTemplateFiles.put("model_doc.mustache", ".md");
             apiDocTemplateFiles.put("api_doc.mustache", ".md");
-            apiTestTemplateFiles.put("test.mustache", ".java");
+            apiTestInterfaceTemplateFiles.put("api_test_interface.mustache", ".java");
+            apiTestTemplateFiles.put("api_test.mustache", ".java");
             supportingFiles.add(new SupportingFile("JSON.mustache", invokerFolder, "JSON.java"));
         }
 
@@ -388,9 +389,11 @@ public class JavaClientCodegen extends DefaultCodegen implements CodegenConfig {
 
     @Override
     public String apiTestFileFolder() {
-        System.out.println("Test File Folder");
-        System.out.println(outputFolder + "/" + sourceFolder + "/" + apiPackage().replace('.', '/'));
         return (outputFolder + "/" + testBasePath + "/" + apiPackage().replace('.', '/'));
+    }
+    @Override
+    public String apiTestInterfaceFileFolder() {
+        return (outputFolder + "/" + testBasePath + "/" + "interfaces");
     }
 
     @Override

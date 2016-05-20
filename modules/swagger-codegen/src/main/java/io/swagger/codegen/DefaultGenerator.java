@@ -441,6 +441,30 @@ public class DefaultGenerator extends AbstractGenerator implements Generator {
                         files.add(new File(filename));
                     }
 
+                    // to generate api test interface files
+                    for (String templateName : config.apiTestInterfaceTemplateFiles().keySet()) {
+                        String filename = config.apiTestInterfaceFilename(templateName, tag);
+                        // do not overwrite test file that already exists
+                        if (new File(filename).exists()) {
+                            LOGGER.info("File exists. Skipped overwriting " + filename);
+                            continue;
+                        }
+                        String templateFile = getFullTemplateFile(config, templateName);
+                        String template = readTemplate(templateFile);
+                        Template tmpl = Mustache.compiler()
+                                .withLoader(new Mustache.TemplateLoader() {
+                                    @Override
+                                    public Reader getTemplate(String name) {
+                                        return getTemplateReader(getFullTemplateFile(config, name + ".mustache"));
+                                    }
+                                })
+                                .defaultValue("")
+                                .compile(template);
+
+                        writeToFile(filename, tmpl.execute(operation));
+                        files.add(new File(filename));
+                    }
+
                     // to generate api documentation files
                     for (String templateName : config.apiDocTemplateFiles().keySet()) {
                         String filename = config.apiDocFilename(templateName, tag);
