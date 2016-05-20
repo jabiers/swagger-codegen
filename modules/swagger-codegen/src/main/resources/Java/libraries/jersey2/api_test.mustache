@@ -1,0 +1,56 @@
+package {{package}};
+
+import interfaces.*;
+
+import {{invokerPackage}}.ApiException;
+import {{invokerPackage}}.ApiClient;
+import {{invokerPackage}}.Configuration;
+import {{invokerPackage}}.Pair;
+
+import javax.ws.rs.core.GenericType;
+
+{{#imports}}
+import {{import}};
+{{/imports}}
+
+import java.util.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+{{>generatedAnnotation}}
+
+{{#operations}}
+public class {{classname}}Test implements {{classname}}TestInterface {
+
+    private {{classname}} api;
+    @Before
+    public void setUp() throws Exception {
+        api =  new {{classname}}();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+
+    }
+
+    {{#operation}}
+    /**
+    * {{summary}}
+    * {{notes}}{{#allParams}}
+        * @param {{paramName}} {{description}}{{#required}} (required){{/required}}{{^required}} (optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}{{#returnType}}
+        * @return {{{returnType}}}{{/returnType}}
+    * @throws ApiException if fails to make API call
+    */
+    @Test
+    public void {{operationId}} () throws Exception {
+        {{#allParams}}
+            {{{dataType}}} {{{paramName}}} = {{{example}}}; // {{{dataType}}} | {{{description}}}
+        {{/allParams}}
+        api.{{operationId}}({{#allParams}} {{{paramName}}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
+    }
+    {{/operation}}
+}
+{{/operations}}

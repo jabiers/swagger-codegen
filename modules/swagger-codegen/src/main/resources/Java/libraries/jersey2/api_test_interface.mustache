@@ -1,0 +1,18 @@
+package interfaces;
+
+{{>generatedAnnotation}}
+
+{{#operations}}
+public interface {{classname}}TestInterface {
+    {{#operation}}
+    /**
+    * {{summary}}
+    * {{notes}}{{#allParams}}
+        * @param {{paramName}} {{description}}{{#required}} (required){{/required}}{{^required}} (optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}{{#returnType}}
+        * @return {{{returnType}}}{{/returnType}}
+    * @throws ApiException if fails to make API call
+    */
+    public void {{operationId}}() throws Exception;
+    {{/operation}}
+}
+{{/operations}}
