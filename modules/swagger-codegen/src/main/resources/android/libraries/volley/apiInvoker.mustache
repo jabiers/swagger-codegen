@@ -486,6 +486,7 @@ public class ApiInvoker {
              request = new PatchRequest(url, headers, null, null, stringRequest, errorListener);
           }
        }
+        request.setRetryPolicy(new DefaultRetryPolicy(this.connectionTimeout * 1000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
     return request;
   }
 
