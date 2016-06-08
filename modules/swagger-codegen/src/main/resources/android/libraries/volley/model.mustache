@@ -66,11 +66,11 @@ public class {{classname}} {{#parent}}extends {{{parent}}}{{/parent}} {
 
   @Override 
   public int hashCode() {
-    int result = 17;
+    int _result = 17;
     {{#vars}}
-    result = 31 * result + ({{name}} == null ? 0: {{name}}.hashCode());{{#hasMore}}{{/hasMore}}
+    _result = 31 * _result + ({{name}} == null ? 0: {{name}}.hashCode());{{#hasMore}}{{/hasMore}}
     {{/vars}}
-    return result;
+    return _result;
   }
 
   @Override
