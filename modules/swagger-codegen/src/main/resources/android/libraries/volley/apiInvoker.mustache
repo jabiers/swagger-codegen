@@ -46,6 +46,8 @@ public class ApiInvoker {
 
   private int connectionTimeout;
 
+  private ApiFilter filter;
+
   /** Content type "text/plain" with UTF-8 encoding. */
   public static final ContentType TEXT_PLAIN_UTF8 = ContentType.create("text/plain", Consts.UTF_8);
 
@@ -497,5 +499,50 @@ public class ApiInvoker {
 
   public void stopQueue() {
      mRequestQueue.stop();
+  }
+
+
+  public void setApiFilter (ApiFilter filter) {
+    this.filter = filter;
+  }
+
+  public interface ApiFilter {
+    void onError(Request<String> request, VolleyError error);
+  }
+
+  public class ErrorFilter {
+    private Response.ErrorListener errorListener;
+    private ApiFilter filter;
+
+    private Request<String> request;
+
+    ErrorFilter(Response.ErrorListener errorListener) {
+      this.errorListener = errorListener;
+    }
+
+    public void setErrorListener(Response.ErrorListener errorListener) {
+      this.errorListener = errorListener;
+    }
+
+    public Response.ErrorListener getErrorListener() {
+
+      Response.ErrorListener error = new Response.ErrorListener() {
+
+        @Override
+        public void onErrorResponse(VolleyError error) {
+          filter.onError(request, error);
+          errorListener.onErrorResponse(error);
+        }
+      };
+      return error;
+    }
+
+    public void setRequest(Request<String> request) {
+      this.request = request;
+    }
+
+    public void setApiFilter(ApiFilter filter) {
+      this.filter = filter;
+    }
   }
 }
