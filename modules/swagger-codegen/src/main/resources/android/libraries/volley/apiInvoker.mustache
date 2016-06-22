@@ -361,8 +361,13 @@ public class ApiInvoker {
   }
 
   public void invokeAPI(String host, String path, String method, List<Pair> queryParams, Object body, Map<String, String> headerParams, Map<String, String> formParams, String contentType, String[] authNames, Response.Listener<String> stringRequest, Response.ErrorListener errorListener) throws ApiException {
-     Request request = createRequest(host, path, method, queryParams, body, headerParams, formParams, contentType, authNames, stringRequest, errorListener);
-     if (request != null) mRequestQueue.add(request);
+    ErrorFilter filter = new ErrorFilter(errorListener);
+
+    Request request = createRequest(host, path, method, queryParams, body, headerParams, formParams, contentType, authNames, stringRequest, filter.getErrorListener());
+    filter.setRequest(request);
+    filter.setApiFilter(this.filter);
+
+    if (request != null) mRequestQueue.add(request);
   }
 
   public Request<String> createRequest(String host, String path, String method, List<Pair> queryParams, Object body, Map<String, String> headerParams, Map<String, String> formParams, String contentType, String[] authNames, Response.Listener<String> stringRequest, Response.ErrorListener errorListener) throws ApiException {
