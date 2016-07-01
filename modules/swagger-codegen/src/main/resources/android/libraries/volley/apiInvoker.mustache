@@ -361,11 +361,7 @@ public class ApiInvoker {
   }
 
   public void invokeAPI(String host, String path, String method, List<Pair> queryParams, Object body, Map<String, String> headerParams, Map<String, String> formParams, String contentType, String[] authNames, Response.Listener<String> stringRequest, Response.ErrorListener errorListener) throws ApiException {
-    ErrorFilter filter = new ErrorFilter(errorListener);
-
-    Request request = createRequest(host, path, method, queryParams, body, headerParams, formParams, contentType, authNames, stringRequest, filter.getErrorListener());
-    filter.setRequest(request);
-    filter.setApiFilter(this.filter);
+    Request request = createRequest(host, path, method, queryParams, body, headerParams, formParams, contentType, authNames, stringRequest, errorListener);
 
     if (request != null) mRequestQueue.add(request);
   }
@@ -429,6 +425,8 @@ public class ApiInvoker {
     }
     Request request = null;
 
+    ErrorFilter errorFilter = new ErrorFilter(errorListener);
+    errorListener = errorFilter.getErrorListener();
     if ("GET".equals(method)) {
       request = new GetRequest(url, headers, null, stringRequest, errorListener);
     }
@@ -489,6 +487,9 @@ public class ApiInvoker {
           }
        }
         request.setRetryPolicy(new DefaultRetryPolicy(this.connectionTimeout * 1000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        errorFilter.setRequest(request);
+        errorFilter.setApiFilter(this.filter);
+        this.filter.onRequest(request);
     return request;
   }
 
@@ -512,6 +513,8 @@ public class ApiInvoker {
   }
 
   public interface ApiFilter {
+    void onRequest(Request<String> request);
+
     void onError(Request<String> request, VolleyError error);
   }
 
