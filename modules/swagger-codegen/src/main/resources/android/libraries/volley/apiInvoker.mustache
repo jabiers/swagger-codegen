@@ -423,10 +423,13 @@ public class ApiInvoker {
       }
       formParamStr = formParamBuilder.toString();
     }
-    Request request = null;
 
-    ErrorFilter errorFilter = new ErrorFilter(errorListener);
-    errorListener = errorFilter.getErrorListener();
+
+    Request request = null;
+    HTTPFilter httpFilter = new HTTPFilter(stringRequest, errorListener);
+    stringRequest = httpFilter.getResponseListener();
+    errorListener = httpFilter.getErrorListener();
+
     if ("GET".equals(method)) {
       request = new GetRequest(url, headers, null, stringRequest, errorListener);
     }
@@ -517,40 +520,58 @@ public class ApiInvoker {
 
     void onError(Request<String> request, VolleyError error);
   }
+    public class HTTPFilter {
+        private Response.ErrorListener errorListener;
+        private Response.Listener<String> responseListener;
+        private ApiFilter filter;
 
-  public class ErrorFilter {
-    private Response.ErrorListener errorListener;
-    private ApiFilter filter;
+        private Request<String> request;
 
-    private Request<String> request;
-
-    ErrorFilter(Response.ErrorListener errorListener) {
-      this.errorListener = errorListener;
-    }
-
-    public void setErrorListener(Response.ErrorListener errorListener) {
-      this.errorListener = errorListener;
-    }
-
-    public Response.ErrorListener getErrorListener() {
-
-      Response.ErrorListener error = new Response.ErrorListener() {
-
-        @Override
-        public void onErrorResponse(VolleyError error) {
-          filter.onError(request, error);
-          errorListener.onErrorResponse(error);
+        HTTPFilter(Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+            this.responseListener = responseListener;
+            this.errorListener = errorListener;
         }
-      };
-      return error;
-    }
 
-    public void setRequest(Request<String> request) {
-      this.request = request;
-    }
+        public void setErrorListener(Response.ErrorListener errorListener) {
+            this.errorListener = errorListener;
+        }
 
-    public void setApiFilter(ApiFilter filter) {
-      this.filter = filter;
+        public Response.ErrorListener getErrorListener() {
+
+            Response.ErrorListener error = new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    filter.onError(request, error);
+                    errorListener.onErrorResponse(error);
+                }
+            };
+            return error;
+        }
+
+        public void setResponseListener(Response.Listener<String> listener) {
+            this.responseListener = listener;
+        }
+
+        public Response.Listener<String> getResponseListener() {
+            Response.Listener<String> listener = new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    filter.onResponse(request, response);
+                    responseListener.onResponse(response);
+
+                }
+            };
+
+            return listener;
+        }
+
+        public void setRequest(Request<String> request) {
+            this.request = request;
+        }
+
+        public void setApiFilter(ApiFilter filter) {
+            this.filter = filter;
+        }
     }
-  }
 }
