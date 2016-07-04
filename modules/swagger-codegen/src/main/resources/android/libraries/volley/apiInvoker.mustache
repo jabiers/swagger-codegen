@@ -46,7 +46,7 @@ public class ApiInvoker {
 
   private int connectionTimeout;
 
-  private ApiFilter errorFilter;
+  private ApiFilter filter;
 
   /** Content type "text/plain" with UTF-8 encoding. */
   public static final ContentType TEXT_PLAIN_UTF8 = ContentType.create("text/plain", Consts.UTF_8);
@@ -490,8 +490,8 @@ public class ApiInvoker {
           }
        }
         request.setRetryPolicy(new DefaultRetryPolicy(this.connectionTimeout * 1000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        errorFilter.setRequest(request);
-        errorFilter.setApiFilter(this.filter);
+        httpFilter.setRequest(request);
+        httpFilter.setApiFilter(this.filter);
         this.filter.onRequest(request);
     return request;
   }
