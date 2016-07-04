@@ -46,7 +46,7 @@ public class ApiInvoker {
 
   private int connectionTimeout;
 
-  private ApiFilter filter;
+  private ApiFilter errorFilter;
 
   /** Content type "text/plain" with UTF-8 encoding. */
   public static final ContentType TEXT_PLAIN_UTF8 = ContentType.create("text/plain", Consts.UTF_8);
@@ -515,11 +515,11 @@ public class ApiInvoker {
     this.filter = filter;
   }
 
-  public interface ApiFilter {
+public interface ApiFilter {
     void onRequest(Request<String> request);
-
+    void onResponse(Request<String> request, String response);
     void onError(Request<String> request, VolleyError error);
-  }
+}
     public class HTTPFilter {
         private Response.ErrorListener errorListener;
         private Response.Listener<String> responseListener;
